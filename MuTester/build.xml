@@ -1,0 +1,56 @@
+<project default="Generate Mutation Score">
+
+    <target name="Generate Mutants">
+        <java jar="MutantGeneratorWindows.jar" fork="true"/>
+    </target>
+
+   <target name="Replicate Test Suite" depends="Generate Mutants">
+       	<java jar="TestReplicatorWindows.jar" fork="true"/>
+    </target>
+ 
+	<target name="Junit Tests" depends="Compile Tests">
+		<mkdir dir="reports"/>
+  		<mkdir dir="reports/raw"/>
+  		<mkdir dir="reports/html/"/>
+		<junit printsummary="false" showoutput="false" outputtoformatters="false">
+			<classpath path="staging" />
+				<!-- <pathelement location="junit-4.13.jar" />
+				<pathelement location="staging/com/hsk/code" />
+				<pathelement location="staging/com/hsk/test" /> -->  
+				<!-- <pathelement location="stating" /> -->
+			<!-- </classpath> -->
+			<batchtest todir="reports/raw">
+				<fileset dir="Generated Test Copies">
+					<include name="**/*Test*.java"></include>
+				</fileset>
+			</batchtest>
+			
+			
+			<formatter type="xml"/>
+		</junit>
+	</target>
+	
+	<target name="Compile Mutants" depends="Replicate Test Suite">
+		<javac includeantruntime="true" srcdir="Generated Mutants" destdir="staging" classpath="junit-4.13.jar">
+			<exclude name="Temp.java"></exclude>
+		</javac>
+	</target>
+	<target name="Compile Tests" depends="Compile Mutants">
+		<javac includeantruntime="true" srcdir="Generated Test Copies" destdir="staging" classpath="junit-4.13.jar">
+			<exclude name="TempTest.java"></exclude>
+		</javac>
+	</target> 
+
+	<target name="Generate Test Reports" depends="Junit Tests">
+        <junitreport todir="reports">
+            <fileset dir="reports/raw/">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="reports/html/" />
+        </junitreport>	
+	</target>
+
+	<target name="Generate Mutation Score" depends="Generate Test Reports">
+        	<java jar="MutationTestingResultWindows.jar" fork="true"/>
+    	</target>
+</project>
