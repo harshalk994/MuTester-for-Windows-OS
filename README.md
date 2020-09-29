@@ -27,3 +27,8 @@
   - The source code can be viewed and dowloaded from below link.
   
     [MuTester Source Code](https://github.com/harshalk994/Mutation-Testing-Tool)
+
+Note: 
+If you are using a MAC OS, please use the below link to download MuTester:
+
+[MuTester for MAC OS](https://github.com/harshalk994/MuTester-for-MAC-OS)
